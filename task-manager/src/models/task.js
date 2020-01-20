@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 
-const Task = mongoose.model('Task', {
+const taskSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   completed: {
     type: Boolean,
@@ -14,13 +14,24 @@ const Task = mongoose.model('Task', {
     {
       if( value )
       {
-        throw new Error('New tasks must be incomplete')
+        throw new Error('New tasks must be incomplete');
       }
     }
   },
   userid: {
-    type: String
-  }
+    type: String,
+  },
 })
 
-module.exports = Task
+taskSchema.pre('save', async function(next)
+{
+  const user = this;
+  if (user.isModified('status'))
+  {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+  next();
+});
+
+const Task = mongoose.model('Task', taskSchema);
+module.exports = Task;
