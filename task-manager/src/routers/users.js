@@ -16,20 +16,34 @@ router.delete('/users/:id', async(req, res) =>
     {
       res.send(user);
     }
-  }
-  catch(e) {
-    res.status(500).send(e)
+  } catch (e)
+  {
+    res.status(500).send(e);
   }
 })
 
-router.post('/users', async (req, res) =>
+router.post('/users/login', async(req, res) =>
+{
+  try
+  {
+    const user = await Users.findByCredentials(req.body.email,
+        req.body.password);
+    res.send(user);
+  } catch (e)
+  {
+    res.status(400).send(e.toString());
+  }
+});
+
+router.post('/users', async(req, res) =>
 {
   const user = new Users(req.body);
 
-  try{
-    await user.save()
-    res.status(201).send(user)
-  } catch(e)
+  try
+  {
+    await user.save();
+    res.status(201).send(user);
+  } catch (e)
   {
     res.status(400).send(e)
   }
