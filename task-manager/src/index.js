@@ -8,6 +8,21 @@ const port = process.env.PORT || 3000
 
 app.use(express.json())
 
+app.delete('/users/:id', async (req, res) => {
+  try{
+    const user = await User.findByIdAndDelete( req.params.id )
+    if( !user ){
+      return res.status(404).send()
+    }
+    else{
+      res.send(user)
+    }
+  }
+  catch(e) {
+    res.status(500).send(e)
+  }
+})
+
 app.post('/users', async (req, res) =>
 {
   const user = new User(req.body)
@@ -147,6 +162,21 @@ app.get('/tasks/:id', async (req, res) =>
   }
   catch(e)
   {
+    res.status(500).send(e)
+  }
+})
+
+app.delete('/tasks/:id', async (req, res) => {
+  try{
+    const task = await Task.findByIdAndDelete( req.params.id )
+    if( !task ){
+      return res.status(404).send()
+    }
+    else{
+      res.send(task)
+    }
+  }
+  catch(e) {
     res.status(500).send(e)
   }
 })
