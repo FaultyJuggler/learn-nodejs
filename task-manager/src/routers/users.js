@@ -26,9 +26,10 @@ router.post('/users/login', async(req, res) =>
 {
   try
   {
-    const user = await Users.findByCredentials(req.body.email,
-        req.body.password);
-    res.send(user);
+    const user = await Users.findByCredentials( req.body.email,
+        req.body.password );
+    const token = await user.generateAuthToken();
+    res.status( 200 ).send( user );
   } catch (e)
   {
     res.status(400).send(e.toString());
@@ -42,6 +43,7 @@ router.post('/users', async(req, res) =>
   try
   {
     await user.save();
+    const token = await user.generateAuthToken();
     res.status(201).send(user);
   } catch (e)
   {
