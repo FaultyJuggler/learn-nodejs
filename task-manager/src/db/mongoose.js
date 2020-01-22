@@ -1,7 +1,12 @@
 const mongoose = require( 'mongoose' );
+// const dotenv = require('dotenv');
+if( process.env.NODE_ENV === 'production' )
+{
+  require( 'dotenv' ).load();
+}
 
-// mongoose.connect('mongodb://host.docker.internal:27017/task-manager-api',{
-mongoose.connect( 'mongodb://localhost:27017/task-manager-api', {
+const mongoHOST = process.env.LOCALHOST || 'localhost';
+mongoose.connect( `mongodb://${ mongoHOST }:27017/task-manager-api`, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,

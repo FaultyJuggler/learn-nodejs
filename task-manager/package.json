@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node -r dotenv/config src/index.js",
     "dev": "nodemon src/index.js"
   },
   "keywords": [],
@@ -19,6 +19,7 @@
     "validator": "^12.1.0"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "nodemon": "^2.0.2"
   }
 }
