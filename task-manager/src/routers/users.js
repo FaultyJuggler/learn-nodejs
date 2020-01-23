@@ -30,7 +30,7 @@ router.post('/users/login', async(req, res) =>
     const user = await Users.findByCredentials( req.body.email,
         req.body.password );
     const token = await user.generateAuthToken();
-    res.status( 200 ).send( user );
+    res.status( 200 ).send( {user, token} );
   } catch (e)
   {
     res.status(400).send(e.toString());
@@ -80,31 +80,41 @@ router.patch('/users/:id', async (req, res) =>
       return res.status(404).send();
     }
 
-    res.send(user);
-  }
-  catch(e)
+    res.send( user );
+  } catch( e )
   {
-    res.status(400).send(e)
+    res.status( 400 ).send( e );
   }
-})
+} )
 
-router.get( '/users', auth, async( req, res ) =>
+router.post( '/users/logout', auth, async( req, res ) =>
 {
   try
   {
-    const users = await Users.find( {} );
-    res.send( users );
-  } catch( error )
+    req.user.tokens = req.user.tokens.filter( ( token ) =>
+    {
+      return token.token !== req.token;
+    } );
+    await req.user.save();
+
+    res.send();
+  } catch( e )
   {
-    res.status( 500 ).send( error );
+    req.status( 500 ).send();
   }
 } );
 
-router.get('/users/:id', async (req, res) =>
+router.get( '/users/me', auth, async( req, res ) =>
 {
-  try{
+  res.send( req.user );
+} );
+
+router.get( '/users/:id', async( req, res ) =>
+{
+  try
+  {
     const _id = req.params.id;
-    const user = await Users.findById(_id);
+    const user = await Users.findById( _id );
     if( !user )
     {
       return res.status(404).send()
