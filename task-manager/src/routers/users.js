@@ -1,5 +1,6 @@
 const express = require('express');
-const Users = require('../models/user');
+const Users = require( '../models/user' );
+const auth = require( '../middleware/auth' );
 const router = new express.Router();
 
 module.exports = router;
@@ -87,17 +88,17 @@ router.patch('/users/:id', async (req, res) =>
   }
 })
 
-router.get('/users', async (req, res) =>
+router.get( '/users', auth, async( req, res ) =>
 {
-  try{
-    const users = await Users.find({});
-    res.send(users)
-  }
-  catch(error)
+  try
   {
-    res.status(500).send(error)
+    const users = await Users.find( {} );
+    res.send( users );
+  } catch( error )
+  {
+    res.status( 500 ).send( error );
   }
-})
+} );
 
 router.get('/users/:id', async (req, res) =>
 {
